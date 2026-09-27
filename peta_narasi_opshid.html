@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peta Narasi OPSHID — Alat Redaksi Bersama</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'media',
+      theme: {
+        extend: {
+          colors: {
+            opshid: {
+              bg: '#EEF1EC',
+              surface: '#FBFCF9',
+              ink: '#17201C',
+              cobalt: '#1F3FA3',
+              cobaltHover: '#162F7D',
+              highlight: '#F3D65A',
+              border: '#D8DDD4',
+              muted: '#5F6964',
+              // Semantic Risk
+              riskLow: '#2E7D4F',
+              riskMed: '#A8640B',
+              riskHigh: '#B3261E',
+              // Dark mode extensions
+              darkBg: '#121815',
+              darkSurface: '#19221E',
+              darkInk: '#E6EAE7',
+              darkBorder: '#2B3832',
+              darkMuted: '#9BA6A0'
+            }
+          },
+          fontFamily: {
+            sans: ['"Public Sans"', 'sans-serif'],
+            serif: ['"Literata"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Smooth focus rings & editorial details */
+    *:focus-visible {
+      outline: 2px solid #1F3FA3;
+      outline-offset: 2px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #c3cbbf;
+      border-radius: 3px;
+    }
+    @media (prefers-color-scheme: dark) {
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #2b3832;
+      }
+    }
+  </style>
+</head>
+<body class="bg-opshid-bg text-opshid-ink dark:bg-opshid-darkBg dark:text-opshid-darkInk font-sans antialiased min-h-screen flex flex-col selection:bg-opshid-highlight selection:text-black">
+
+  <!-- Header Redaksi -->
+  <header class="border-b border-opshid-border dark:border-opshid-darkBorder bg-opshid-surface dark:bg-opshid-darkSurface sticky top-0 z-30 px-4 py-3 sm:px-8">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 bg-opshid-cobalt text-white flex items-center justify-center font-bold font-serif text-lg rounded-sm tracking-wider">
+          OP
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-serif font-bold text-lg leading-tight tracking-tight text-opshid-ink dark:text-opshid-darkInk">Peta Narasi OPSHID</span>
+            <span class="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-opshid-border dark:bg-opshid-darkBorder text-opshid-muted dark:text-opshid-darkMuted font-semibold">Redaksi</span>
+          </div>
+          <p class="text-xs text-opshid-muted dark:text-opshid-darkMuted">Alat Amplifikasi Pesan Terpadu Organisasi Pemuda Shiddiqiyyah</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Auth Bar -->
+        <div id="authArea" class="flex items-center text-xs font-mono text-opshid-muted dark:text-opshid-darkMuted">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex border border-opshid-border dark:border-opshid-darkBorder rounded bg-opshid-bg dark:bg-opshid-darkBg p-0.5" role="tablist">
+          <button onclick="switchTab('susun')" id="tabBtn-susun" class="px-3 py-1.5 text-xs font-medium rounded transition-all bg-opshid-surface dark:bg-opshid-darkSurface text-opshid-cobalt dark:text-blue-400 shadow-sm" role="tab">
+            Susun Narasi
+          </button>
+          <button onclick="switchTab('media')" id="tabBtn-media" class="px-3 py-1.5 text-xs font-medium rounded transition-all text-opshid-muted dark:text-opshid-darkMuted hover:text-opshid-ink dark:hover:text-opshid-darkInk" role="tab">
+            Media Jaringan (<span id="mediaBadgeCount">0</span>)
+          </button>
+          <button onclick="switchTab('riwayat')" id="tabBtn-riwayat" class="px-3 py-1.5 text-xs font-medium rounded transition-all text-opshid-muted dark:text-opshid-darkMuted hover:text-opshid-ink dark:hover:text-opshid-darkInk" role="tab">
+            Riwayat
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Modal jika belum login -->
+  <div id="loginModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-opshid-surface dark:bg-opshid-darkSurface border border-opshid-border dark:border-opshid-darkBorder w-full max-w-sm rounded p-6 shadow-xl">
+      <div class="font-serif font-bold text-lg mb-1">Masuk Redaksi OPSHID</div>
+      <p class="text-xs text-opshid-muted dark:text-opshid-darkMuted mb-4">Akses terbatas untuk jajaran pengurus & tim redaksi media jaringan.</p>
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-mono uppercase mb-1">Email Redaksi</label>
+          <input id="loginEmail" type="email" required placeholder="redaksi@opshid.org" class="w-full text-sm px-3 py-2 border border-opshid-border dark:border-opshid-darkBorder rounded bg-white dark:bg-black/30">
+        </div>
+        <button type="submit" class="w-full bg-opshid-cobalt hover:bg-opshid-cobaltHover text-white py-2 px-4 rounded text-sm font-medium">
+          Buka Ruang Redaksi
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded shadow-lg text-xs font-mono hidden items-center gap-2 border bg-opshid-surface dark:bg-opshid-darkSurface border-opshid-border dark:border-opshid-darkBorder"></div>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: SUSUN NARASI -->
+    <!-- ========================================== -->
+    <section id="tab-susun" class="space-y-6">
+      
+      <!-- Layout Desktop 2 Kolom -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- KOLOM FORMULIR (Kiri, sticky di desktop) -->
+        <div class="lg:col-span-5 lg:sticky lg:top-20 space-y-5 bg-opshid-surface dark:bg-opshid-darkSurface border border-opshid-border dark:border-opshid-darkBorder p-5 sm:p-6 rounded">
+          <div class="border-b border-opshid-border dark:border-opshid-darkBorder pb-3 flex items-center justify-between">
+            <h2 class="font-serif font-bold text-base tracking-tight">Formulir Isu & Pengarahan</h2>
+            <span class="text-[11px] font-mono text-opshid-muted dark:text-opshid-darkMuted">AI Assisted</span>
+          </div>
+
+          <form id="narasiForm" onsubmit="handleGenerateNarrative(event)" class="space-y-4 text-xs">
+            
+            <!-- 1. Isu -->
+            <div>
+              <div class="flex justify-between items-baseline mb-1">
+                <label for="inputIsu" class="font-bold uppercase tracking-wider text-[11px]">1. Isu Utama <span class="text-opshid-riskHigh">*</span></label>
+                <span id="charCountIsu" class="text-[10px] font-mono text-opshid-muted dark:text-opshid-darkMuted">0 / 12000</span>
+              </div>
+              <textarea id="inputIsu" rows="4" maxlength="12000" required
+                placeholder="Judul berita, peristiwa, atau ringkasan isu. Boleh tempel paragraf berita di sini..."
+                class="w-full p-2.5 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 focus:ring-1 focus:ring-opshid-cobalt text-xs font-sans leading-relaxed"></textarea>
+            </div>
+
+            <!-- 2. Tujuan Narasi -->
+            <div>
+              <label class="block font-bold uppercase tracking-wider text-[11px] mb-1.5">2. Tujuan Narasi</label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5" id="chipTujuanGroup">
+                <button type="button" data-val="Memperkuat" class="tujuan-chip px-2 py-1.5 rounded border border-opshid-cobalt bg-opshid-cobalt text-white font-medium text-center">Memperkuat</button>
+                <button type="button" data-val="Meluruskan" class="tujuan-chip px-2 py-1.5 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 text-opshid-muted dark:text-opshid-darkMuted hover:border-opshid-cobalt text-center">Meluruskan</button>
+                <button type="button" data-val="Merespons" class="tujuan-chip px-2 py-1.5 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 text-opshid-muted dark:text-opshid-darkMuted hover:border-opshid-cobalt text-center">Merespons</button>
+                <button type="button" data-val="Mengedukasi" class="tujuan-chip px-2 py-1.5 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 text-opshid-muted dark:text-opshid-darkMuted hover:border-opshid-cobalt text-center">Mengedukasi</button>
+              </div>
+            </div>
+
+            <!-- 3. Posisi OPSHID -->
+            <div>
+              <label for="inputPosisi" class="block font-bold uppercase tracking-wider text-[11px] mb-1">3. Posisi OPSHID</label>
+              <textarea id="inputPosisi" rows="2"
+                placeholder="Satu-dua kalimat sikap organisasi. Kosongkan jika belum ada."
+                class="w-full p-2 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 text-xs"></textarea>
+            </div>
+
+            <!-- 4. Batasan -->
+            <div>
+              <label for="inputBatasan" class="block font-bold uppercase tracking-wider text-[11px] mb-1">4. Batasan Redaksi</label>
+              <input id="inputBatasan" type="text"
+                placeholder="Hal yang tidak boleh disentuh atau disebut."
+                class="w-full p-2 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 text-xs">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- 5. Hashtag Wajib -->
+              <div>
+                <label for="inputHashtag" class="block font-bold uppercase tracking-wider text-[11px] mb-1">5. Hashtag Wajib</label>
+                <input id="inputHashtag" type="text"
+                  placeholder="#HariSantri2026"
+                  class="w-full p-2 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 font-mono text-xs">
+              </div>
+              <!-- 6. Waktu Tayang yang Dituju -->
+              <div>
+                <label for="inputWaktu" class="block font-bold uppercase tracking-wider text-[11px] mb-1">6. Target Waktu Tayang</label>
+                <input id="inputWaktu" type="text"
+                  placeholder="22 Oktober 2026, pagi sampai sore"
+                  class="w-full p-2 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 text-xs">
+              </div>
+            </div>
+
+            <!-- 7. Dokumentasi yang Tersedia -->
+            <div>
+              <label for="inputDokumentasi" class="block font-bold uppercase tracking-wider text-[11px] mb-1">7. Dokumentasi Tersedia</label>
+              <textarea id="inputDokumentasi" rows="2"
+                placeholder="Foto upacara, foto baksos, video sambutan ketua..."
+                class="w-full p-2 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 text-xs"></textarea>
+            </div>
+
+            <!-- 8. Media Jaringan Terpilih -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="block font-bold uppercase tracking-wider text-[11px]">8. Media Jaringan Ikut Tayang</label>
+                <button type="button" onclick="selectAllMedia(true)" class="text-[10px] text-opshid-cobalt dark:text-blue-400 hover:underline">Pilih Semua</button>
+              </div>
+              <div id="mediaCheckboxesList" class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto custom-scrollbar p-2 bg-opshid-bg dark:bg-opshid-darkBg rounded border border-opshid-border dark:border-opshid-darkBorder">
+                <!-- Checkboxes populated by JS -->
+              </div>
+            </div>
+
+            <!-- Action Buttons & Progress -->
+            <div class="pt-2 space-y-3">
+              <div class="flex gap-2">
+                <button type="submit" id="btnSubmitNarrative" class="flex-1 bg-opshid-cobalt hover:bg-opshid-cobaltHover text-white py-2.5 px-4 rounded font-medium text-xs flex items-center justify-center gap-2 transition-colors">
+                  <span>Susun peta narasi</span>
+                </button>
+                <button type="button" id="btnAbortNarrative" onclick="handleAbort()" class="hidden bg-opshid-riskHigh text-white py-2.5 px-4 rounded font-medium text-xs hover:bg-red-700">
+                  Hentikan
+                </button>
+              </div>
+
+              <!-- Tombol Salin Prompt Cadangan -->
+              <button type="button" onclick="copyConstructedPrompt()" class="w-full py-1.5 border border-opshid-border dark:border-opshid-darkBorder hover:bg-black/5 dark:hover:bg-white/5 rounded text-[11px] font-mono text-opshid-muted dark:text-opshid-darkMuted flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                <span>Salin prompt lengkap (cadangan chatbot luar)</span>
+              </button>
+
+              <!-- Progress Bar -->
+              <div id="processIndicator" class="hidden p-3 rounded bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 space-y-2">
+                <div class="w-full bg-blue-200 dark:bg-blue-900 rounded-full h-1.5 overflow-hidden">
+                  <div id="progressBar" class="bg-opshid-cobalt h-1.5 rounded-full transition-all duration-300" style="width: 25%"></div>
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-opshid-muted dark:text-opshid-darkMuted">
+                  <span>Claude sedang membaca isu dan menimbang risikonya. Biasanya 30–90 detik.</span>
+                  <span id="charStreamCounter" class="font-mono text-opshid-cobalt font-semibold"></span>
+                </div>
+              </div>
+
+              <!-- Error Alert -->
+              <div id="formError" class="hidden p-3 rounded bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-opshid-riskHigh"></div>
+
+            </div>
+          </form>
+        </div>
+
+        <!-- KOLOM HASIL (Kanan) -->
+        <div class="lg:col-span-7 space-y-6">
+          
+          <!-- Sample Banner -->
+          <div id="sampleNoticeBanner" class="p-3 bg-amber-50 dark:bg-amber-950/40 border-l-4 border-amber-500 rounded text-xs flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-amber-800 dark:text-amber-300">Contoh tampilan. Ini bukan hasil untuk isu Anda.</span>
+              <span class="text-amber-700 dark:text-amber-400">Silakan isi formulir lalu tekan "Susun peta narasi".</span>
+            </div>
+          </div>
+
+          <!-- Real Output Container -->
+          <div id="resultContentArea" class="space-y-6">
+            <!-- Disuntikkan lewat renderNarrativeResult() -->
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: MEDIA JARINGAN -->
+    <!-- ========================================== -->
+    <section id="tab-media" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Form Tambah / Edit Media -->
+        <div class="lg:col-span-5 bg-opshid-surface dark:bg-opshid-darkSurface border border-opshid-border dark:border-opshid-darkBorder p-5 rounded space-y-4">
+          <div class="border-b border-opshid-border dark:border-opshid-darkBorder pb-2 flex items-center justify-between">
+            <h2 id="mediaFormTitle" class="font-serif font-bold text-base">Tambah Media Jaringan</h2>
+            <button id="cancelEditMediaBtn" onclick="resetMediaForm()" class="hidden text-xs text-opshid-muted dark:text-opshid-darkMuted hover:underline">Batal Ubah</button>
+          </div>
+          
+          <form id="mediaManageForm" onsubmit="handleSaveMedia(event)" class="space-y-3 text-xs">
+            <input type="hidden" id="mediaEditId">
+            <div>
+              <label class="block font-bold mb-1">Nama Media <span class="text-opshid-riskHigh">*</span></label>
+              <input id="mediaNama" type="text" required placeholder="Contoh: Suara Pemuda Shiddiqiyyah" class="w-full p-2 border border-opshid-border dark:border-opshid-darkBorder rounded bg-white dark:bg-black/20">
+            </div>
+            <div>
+              <label class="block font-bold mb-1">Platform Utama</label>
+              <input id="mediaPlatform" type="text" placeholder="Instagram, TikTok, Website, Facebook, X" class="w-full p-2 border border-opshid-border dark:border-opshid-darkBorder rounded bg-white dark:bg-black/20">
+            </div>
+            <div>
+              <label class="block font-bold mb-1">Audiens Sasaran</label>
+              <input id="mediaAudiens" type="text" placeholder="Santri muda, milenial luar pesantren, simpatisan" class="w-full p-2 border border-opshid-border dark:border-opshid-darkBorder rounded bg-white dark:bg-black/20">
+            </div>
+            <div>
+              <label class="block font-bold mb-1">Gaya Bahasa</label>
+              <input id="mediaGaya" type="text" placeholder="Lugas, santai, visual interaktif, formal santun" class="w-full p-2 border border-opshid-border dark:border-opshid-darkBorder rounded bg-white dark:bg-black/20">
+            </div>
+            <div>
+              <label class="block font-bold mb-1">Catatan Tambahan</label>
+              <textarea id="mediaCatatan" rows="2" placeholder="Fokus feed infografik, jam ramai malam, dilarang bahasa gaul berlebihan" class="w-full p-2 border border-opshid-border dark:border-opshid-darkBorder rounded bg-white dark:bg-black/20"></textarea>
+            </div>
+            <button type="submit" id="mediaSubmitBtn" class="w-full bg-opshid-cobalt hover:bg-opshid-cobaltHover text-white py-2 rounded font-medium">
+              Simpan media
+            </button>
+          </form>
+        </div>
+
+        <!-- Daftar Media -->
+        <div class="lg:col-span-7 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-opshid-border dark:border-opshid-darkBorder">
+            <h3 class="font-serif font-bold text-base">Daftar Jejaring Terdaftar</h3>
+            <span class="text-xs font-mono text-opshid-muted dark:text-opshid-darkMuted" id="mediaTableTotal">0 Media</span>
+          </div>
+          <div id="mediaDirectoryList" class="space-y-3">
+            <!-- Diisi JavaScript -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: RIWAYAT -->
+    <!-- ========================================== -->
+    <section id="tab-riwayat" class="hidden space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-opshid-border dark:border-opshid-darkBorder">
+        <h2 class="font-serif font-bold text-lg">Arsip Riwayat Peta Narasi</h2>
+        <span class="text-xs font-mono text-opshid-muted dark:text-opshid-darkMuted" id="historyCounter">0 Dokumen</span>
+      </div>
+
+      <div id="historyEmptyState" class="hidden text-center py-12 border border-dashed border-opshid-border dark:border-opshid-darkBorder rounded">
+        <p class="text-sm text-opshid-muted dark:text-opshid-darkMuted">Belum ada riwayat peta narasi yang disusun.</p>
+      </div>
+
+      <div id="historyTableList" class="space-y-3">
+        <!-- Render Riwayat -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Konfigurasi Kunci Server / Mock Backend Modal (Bisa disetel oleh Pengguna) -->
+  <footer class="border-t border-opshid-border dark:border-opshid-darkBorder py-4 px-4 text-center text-xs text-opshid-muted dark:text-opshid-darkMuted bg-opshid-surface dark:bg-opshid-darkSurface">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div>OPSHID Media &bull; Meja Redaksi Terpusat &bull; Th. 2026</div>
+      <div class="flex items-center gap-3">
+        <button onclick="openApiConfig()" class="text-opshid-cobalt dark:text-blue-400 hover:underline font-mono text-[11px]">
+          Pengaturan Kunci API (AI Secret)
+        </button>
+        <span>&bull;</span>
+        <span class="font-mono text-[11px]" id="authStatusText">Tamu</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Konfigurasi API Server / Secret Key -->
+  <div id="apiConfigModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-opshid-surface dark:bg-opshid-darkSurface border border-opshid-border dark:border-opshid-darkBorder w-full max-w-md rounded p-6 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-serif font-bold text-base">Pengaturan Koneksi API AI</h3>
+        <button onclick="closeApiConfig()" class="text-opshid-muted dark:text-opshid-darkMuted hover:text-black dark:hover:text-white">&times;</button>
+      </div>
+      <p class="text-xs text-opshid-muted dark:text-opshid-darkMuted">
+        Sesuai panduan arsitektur keamanan: API Key disimpan secara rahasia di penyimpanan aman lokal/server dan TIDAK BOLEH dibocorkan ke publik. Mendukung Gemini API atau OpenAI/Claude proxy.
+      </p>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold mb-1">Provider AI</label>
+          <select id="apiProviderSelect" class="w-full p-2 border border-opshid-border dark:border-opshid-darkBorder rounded bg-white dark:bg-black/20 font-mono">
+            <option value="gemini">Google Gemini (Default: gemini-1.5-flash / gemini-2.5)</option>
+            <option value="openai">OpenAI (GPT-4o)</option>
+            <option value="anthropic">Anthropic Claude (via Edge Proxy)</option>
+            <option value="simulation">Simulasi Redaksi Cepat (Offline)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold mb-1">API Key (Server Secret)</label>
+          <input id="apiSecretKeyInput" type="password" placeholder="AIzaSy... atau sk-..." class="w-full p-2 border border-opshid-border dark:border-opshid-darkBorder rounded bg-white dark:bg-black/20 font-mono">
+          <p class="text-[10px] text-opshid-muted dark:text-opshid-darkMuted mt-1">Bila kosong, sistem memakai engine simulasi redaksi internal lengkap dengan format JSON yang valid.</p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeApiConfig()" class="px-3 py-1.5 border border-opshid-border dark:border-opshid-darkBorder rounded text-xs">Tutup</button>
+        <button onclick="saveApiConfig()" class="px-4 py-1.5 bg-opshid-cobalt text-white rounded text-xs font-medium">Simpan Kunci</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT UTAMA APLIKASI -->
+  <script>
+    /* =========================================================================
+       1. DATA BASELINE & INISIALISASI DATABASE (LocalStorage sebagai persistent store)
+       ========================================================================= */
+
+    const DEFAULT_MEDIA = [
+      {
+        id: "m-1",
+        nama: "OPSHID Media (Induk)",
+        platform: "Website, Instagram, YouTube",
+        audiens: "Warga Shiddiqiyyah, tokoh ormas, jurnalis, umum",
+        gaya: "Presisi, berwibawa, kutipan bernas, faktual",
+        catatan: "Rujukan sentral, harus tayang paling awal."
+      },
+      {
+        id: "m-2",
+        nama: "Generasi Pemuda Shiddiqiyyah",
+        platform: "Instagram Reels & TikTok",
+        audiens: "Pemuda, santri milenial, generasi Z",
+        gaya: "Visual tegas, kalimat pendek, dinamis, inspiratif",
+        catatan: "Tonjolkan peran konkret dan kepeloporan pemuda."
+      },
+      {
+        id: "m-3",
+        nama: "Gema Santri Nusantara",
+        platform: "Facebook Page & Portal Berita",
+        audiens: "Keluarga santri, alumni pesantren, jaringan lintas majelis",
+        gaya: "Edukatif, santun, memperkuat ukhuwah kebangsaan",
+        catatan: "Sertakan konteks sejarah dan nilai kesyukuran kemerdekaan."
+      },
+      {
+        id: "m-4",
+        nama: "Ruang Relawan OPSHID",
+        platform: "WhatsApp Channel & Telegram",
+        audiens: "Koordinator daerah, relawan lapangan, simpatisan",
+        gaya: "Instruksional, jelas, ringkas, membakar semangat khidmah",
+        catatan: "Aksi nyata gotong royong dan santunan rumah layak huni."
+      }
+    ];
+
+    const SAMPLE_HARI_SANTRI_RESULT = {
+      judul_isu: "Refleksi Hari Santri: Pengorbanan untuk Kemerdekaan Bangsa",
+      narasi_induk: {
+        key_message: "Santri bukan sekadar penuntut ilmu agama di bilik pesantren, melainkan benteng pertahanan kemerdekaan dan pilar kesyukuran atas kedaulatan Negara Kesatuan Republik Indonesia.",
+        kalimat_kunci: "Kemerdekaan bangsa adalah anugerah luhur; khidmah santri adalah wujud nyata cinta tanah air.",
+        poin_pendukung: [
+          {
+            poin: "Resolusi Jihad dan perjuangan kemerdekaan membuktikan santri senantiasa di garis depan bela negara.",
+            dasar: "Dokumentasi arsip sejarah perjuangan santri 1945 dan peran para kiai nusantara."
+          },
+          {
+            poin: "Santri masa kini memanifestasikan cinta tanah air melalui karya konkret pengentasan kemiskinan dan gotong royong.",
+            dasar: "Laporan [angka] unit Rumah Syukur Layak Huni Shiddiqiyyah yang dibangun secara sukarela."
+          },
+          {
+            poin: "Pendidikan santri menanamkan keikhlasan berbakti tanpa pamrih politis sesaat.",
+            dasar: "Kaidah pendidikan Thoriqoh Shiddiqiyyah tentang Ketuhanan Yang Maha Esa dan Kemanusiaan."
+          }
+        ],
+        nada: "Tegas, bermartabat, dan sarat rasa syukur kebangsaan",
+        paragraf: [
+          "Peringatan Hari Santri tahun ini momentum krusial untuk menegaskan kembali arah perjuangan santri di tengah pusaran zaman. Santri hadir bukan semata-mata sebagai penjaga ritus keagamaan, melainkan fondasi moral dan benteng kebangsaan sejak masa perintisan kemerdekaan Indonesia.",
+          "Sejarah mencatat bahwa kemerdekaan Indonesia tidak diraih dengan cuma-cuma. Keringat dan darah kaum santri bersama para ulama berpadu menjaga tanah air dari rongrongan kolonialisme, mewariskan prinsip bahwa mencintai negeri adalah keniscayaan iman.",
+          "Bagi Organisasi Pemuda Shiddiqiyyah (OPSHID), nilai kesantrian harus terwujud dalam laku nyata. Cinta tanah air diwujudkan bukan dengan retorika kosong, melainkan kerja swadaya yang menyentuh penderitaan sesama rakyat tanpa membedakan latar belakang keyakinan.",
+          "Hingga kini, gerakan swadaya santri OPSHID telah merampungkan [angka] pembangunan Rumah Syukur Layak Huni di berbagai penjuru tanah air, seluruhnya dibiayai gotong royong warga tanpa proposal bantuan asing atau anggaran negara.",
+          "Menjaga kedaulatan bangsa membutuhkan konsistensi kerja dan ketulusan niat. Sebagaimana pesan para sesepuh kita: Kemerdekaan bangsa adalah anugerah luhur; khidmah santri adalah wujud nyata cinta tanah air."
+        ]
+      },
+      tayang_induk: {
+        waktu: "Rabu, 22 Oktober 2026, 06.00 WIB",
+        alasan: "Menjadi rujukan awal bagi seluruh simpul redaksi dan pemangku kepentingan di pagi hari."
+      },
+      judul: [
+        { gaya: "Informatif", teks: "Peringatan Hari Santri 2026: Refleksi Peran Santri dalam Kedaulatan Bangsa" },
+        { gaya: "Informatif", teks: "OPSHID Tegaskan Pengabdian Santri Berakar pada Cinta Tanah Air" },
+        { gaya: "Pertanyaan", teks: "Bagaimana Santri Masa Kini Memaknai Kemerdekaan Bangsa?" },
+        { gaya: "Pertanyaan", teks: "Mengapa Khidmah Santri Tak Pernah Padam bagi Negeri?" },
+        { gaya: "Angka/Data", teks: "[angka] Rumah Syukur Jadi Bukti Nyata Khidmah Santri Shiddiqiyyah" },
+        { gaya: "Angka/Data", teks: "Lebih dari 2 Dekade Konsistensi Santri Gotong Royong Membangun Bangsa" },
+        { gaya: "Kutipan", teks: "[Pimpinan OPSHID]: Berbakti untuk Negeri Adalah Puncak Kesyukuran Santri" },
+        { gaya: "Kutipan", teks: "[Tokoh Shiddiqiyyah]: Jangan Menuntut Balas dari Tanah Air yang Kita Bela" }
+      ],
+      turunan: [
+        {
+          media: "OPSHID Media (Induk)",
+          pintu_masuk: "Pernyataan resmi organisasi dan tinjauan filosofis Hari Santri",
+          judul: "Refleksi Hari Santri: Pengorbanan untuk Kemerdekaan Bangsa",
+          pembuka: "Peringatan Hari Santri bukan seremoni tahunan belaka, melainkan panggilan nurani untuk memeriksa kembali kontribusi kita bagi kedaulatan ibu pertiwi.",
+          diksi: ["kedaulatan", "anugerah luhur", "swadaya", "khidmah", "kemerdekaan"],
+          hashtag: ["#HariSantri2026", "#OPSHIDMedia", "#CintaTanahAir"],
+          jam_tayang: {
+            urutan: 1,
+            waktu: "Rabu, 22 Oktober 2026, 06.00 WIB",
+            alasan: "Jam buka rilis media rujukan nasional."
+          },
+          saran_gambar: [
+            { jenis: "Foto Dokumentasi", komposisi: "Medium shot upacara pengibaran bendera oleh santri berpakaian putih dan berpeci", keterangan: "Santri mengheningkan cipta mengenang para pahlawan pejuang kemerdekaan." },
+            { jenis: "Infografik", keterangan: "Peta sebaran aksi kemanusiaan santri di seluruh Indonesia." }
+          ],
+          catatan: "Pertahankan ketelitian ejaan dan posisikan redaksi sebagai juru bicara resmi."
+        },
+        {
+          media: "Generasi Pemuda Shiddiqiyyah",
+          pintu_masuk: "Tantangan generasi muda santri: dari medan juang fisik ke aksi sosial nyata",
+          judul: "Bukan Santri Biasa: Aksi Pemuda Bela Negeri Lewat Gotong Royong",
+          pembuka: "Kalau 1945 santri angkat senjata membela kemerdekaan, hari ini pemuda santri angkat cangkul dan bata membela martabat sesama rakyat.",
+          diksi: ["muda berdaya", "bergerak nyata", "kedaulatan", "gotong royong"],
+          hashtag: ["#HariSantri2026", "#PemudaOPSHID", "#SantriBergerak"],
+          jam_tayang: {
+            urutan: 2,
+            waktu: "Rabu, 22 Oktober 2026, 08.30 WIB",
+            alasan: "Waktu prime-time pagi saat audiens muda membuka platform video pendek di perjalanan."
+          },
+          saran_gambar: [
+            { jenis: "Video Reels / Foto Aksi", komposisi: "Close up ekspresi pemuda sedang mengaduk semen di proyek Rumah Syukur", keterangan: "Keringat pemuda santri untuk kebahagiaan saudara sebangsa." }
+          ],
+          catatan: "Gunakan teks transisi cepat, hindari musik latar bernada melankolis."
+        },
+        {
+          media: "Gema Santri Nusantara",
+          pintu_masuk: "Nilai historis dan ukhuwah wathaniyah (persaudaraan kebangsaan)",
+          judul: "Menjaga Kemerdekaan: Warisan Luhur Para Ulama untuk Seluruh Rakyat",
+          pembuka: "Pondasi bangsa ini terpatri kokoh dari keikhlasan para santri dan ulama yang tak pernah menghitung pamrih saat mempertahankan tanah pusaka.",
+          diksi: ["warisan luhur", "ukhuwah", "kesyukuran", "benteng bangsa"],
+          hashtag: ["#HariSantri2026", "#SantriNusantara", "#CintaNegeri"],
+          jam_tayang: {
+            urutan: 3,
+            waktu: "Rabu, 22 Oktober 2026, 11.30 WIB",
+            alasan: "Mendekati jam istirahat siang, cocok untuk artikel bernarasi mendalam."
+          },
+          saran_gambar: [
+            { jenis: "Foto Arsip / Dokumentasi Pesantren", komposisi: "Wide angle barisan santri bersujud syukur di serambi pesantren", keterangan: "Doa bersama untuk keselamatan dan kedamaian bangsa Indonesia." }
+          ],
+          catatan: "Tekankan bahwa khidmah santri terbuka untuk seluruh anak bangsa tanpa memandang sekat."
+        },
+        {
+          media: "Ruang Relawan OPSHID",
+          pintu_masuk: "Ajakan khidmah lapangan dan laporan kemajuan karya kemanusiaan",
+          judul: "Khidmah Tanpa Henti: Dari Bilik Santri Menuju Rumah Rakyat",
+          pembuka: "Bagi relawan OPSHID, Hari Santri adalah pengingat bahwa janji pengabdian belum selesai selama masih ada tetangga kita yang tidur di bawah atap bocor.",
+          diksi: ["khidmah lapangan", "gotong royong", "swadaya murni", "mandiri"],
+          hashtag: ["#HariSantri2026", "#RelawanOPSHID", "#RumahSyukur"],
+          jam_tayang: {
+            urutan: 4,
+            waktu: "Rabu, 22 Oktober 2026, 16.30 WIB",
+            alasan: "Sore hari menjelang kepulangan kerja relawan lapangan untuk rekapitulasi."
+          },
+          saran_gambar: [
+            { jenis: "Foto Dokumentasi Lapangan", komposisi: "Human interest santri dan warga tersenyum di depan rumah layak huni yang baru diserahterimakan", keterangan: "Senyum kebersamaan dalam balutan persaudaraan Indonesia." }
+          ],
+          catatan: "Sertakan instruksi koordinasi DPD dan kontak posko terdekat."
+        }
+      ],
+      risiko: {
+        tingkat: "rendah",
+        alasan: "Isu momentum nasional Hari Santri dengan fokus pengabdian sosial dan cinta tanah air sangat aman serta membangun simpati publik luas.",
+        titik_sensitif: [
+          "Potensi diseret ke ranah polarisasi politik partisan jelang pemilu daerah.",
+          "Klaim sepihak yang merendahkan kontribusi elemen bangsa non-pesantren.",
+          "Penyebutan angka pembangunan fasilitas sosial yang belum diaudit resmi."
+        ],
+        hindari: [
+          {
+            framing: "Hanya kaum santri yang paling berhak atas kemerdekaan ini.",
+            ganti: "Santri berdiri bahu-membahu bersama segenap komponen bangsa merawat kemerdekaan."
+          },
+          {
+            framing: "Menyerang kelompok lain yang tidak memperingati Hari Santri.",
+            ganti: "Mengedepankan keterbukaan dan keteladanan akhlak santri kepada siapa saja."
+          }
+        ],
+        kontra_narasi: [
+          {
+            klaim: "Peringatan Hari Santri hanya formalitas seremonial tanpa dampak ekonomi langsung.",
+            jawaban: "Santri OPSHID membuktikannya lewat puluhan tahun kerja mandiri membangun Rumah Syukur Layak Huni tanpa membebani kas negara."
+          }
+        ]
+      },
+      perlu_dicek: [
+        "Pastikan data [angka] unit Rumah Syukur Layak Huni telah diverifikasi oleh koordinator program nasional sebelum dipublikasikan.",
+        "Klarifikasi nama tokoh yang dikutip pada bank judul sebelum naskah diunggah.",
+        "Sinkronisasi seragam kalimat kunci pada teks grafis dan caption video."
+      ]
+    };
+
+    /* =========================================================================
+       2. REPOSITORI & STATE MANAGEMENT
+       ========================================================================= */
+
+    let state = {
+      userEmail: localStorage.getItem('opshid_user_email') || 'editor@opshid.org',
+      mediaList: [],
+      historyList: [],
+      currentResult: null,
+      isGenerating: false,
+      abortController: null,
+      apiProvider: localStorage.getItem('opshid_api_provider') || 'simulation',
+      apiSecret: localStorage.getItem('opshid_api_secret') || '',
+      selectedTujuan: 'Memperkuat'
+    };
+
+    function initData() {
+      // Inisialisasi Media
+      const storedMedia = localStorage.getItem('opshid_media_db');
+      if (storedMedia) {
+        try { state.mediaList = JSON.parse(storedMedia); } catch(e) { state.mediaList = DEFAULT_MEDIA; }
+      } else {
+        state.mediaList = DEFAULT_MEDIA;
+        saveMediaStorage();
+      }
+
+      // Inisialisasi Riwayat
+      const storedHistory = localStorage.getItem('opshid_history_db');
+      if (storedHistory) {
+        try { state.historyList = JSON.parse(storedHistory); } catch(e) { state.historyList = []; }
+      }
+
+      // Tampilkan baseline dummy default jika baru dibuka
+      state.currentResult = SAMPLE_HARI_SANTRI_RESULT;
+
+      updateAuthUI();
+      renderMediaCheckboxes();
+      renderMediaDirectory();
+      renderHistory();
+      renderNarrativeResult(state.currentResult, true);
+    }
+
+    function saveMediaStorage() {
+      localStorage.setItem('opshid_media_db', JSON.stringify(state.mediaList));
+      document.getElementById('mediaBadgeCount').textContent = state.mediaList.length;
+      document.getElementById('mediaTableTotal').textContent = `${state.mediaList.length} Media`;
+    }
+
+    function saveHistoryStorage() {
+      localStorage.setItem('opshid_history_db', JSON.stringify(state.historyList));
+      renderHistory();
+    }
+
+    /* =========================================================================
+       3. SISTEM AUTH SEDERHANA (EMAIL REDAKSI)
+       ========================================================================= */
+
+    function updateAuthUI() {
+      const area = document.getElementById('authArea');
+      const statusText = document.getElementById('authStatusText');
+      if (state.userEmail) {
+        area.innerHTML = `
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+          <span class="truncate max-w-[120px] sm:max-w-none mr-2">${escapeHtml(state.userEmail)}</span>
+          <button onclick="logout()" class="hover:text-opshid-ink dark:hover:text-opshid-darkInk underline">Keluar</button>
+        `;
+        statusText.textContent = `Login: ${state.userEmail}`;
+      } else {
+        area.innerHTML = `<button onclick="openLoginModal()" class="text-opshid-cobalt dark:text-blue-400 font-bold hover:underline">Masuk Redaksi</button>`;
+        statusText.textContent = 'Belum login';
+      }
+    }
+
+    function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
+    function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      if (!email) return;
+      state.userEmail = email;
+      localStorage.setItem('opshid_user_email', email);
+      closeLoginModal();
+      updateAuthUI();
+      showToast('Berhasil masuk ke ruang redaksi');
+    }
+
+    function logout() {
+      state.userEmail = '';
+      localStorage.removeItem('opshid_user_email');
+      updateAuthUI();
+      showToast('Telah keluar dari ruang redaksi');
+    }
+
+    /* =========================================================================
+       4. TAB NAVIGATION
+       ========================================================================= */
+
+    function switchTab(tabName) {
+      ['susun', 'media', 'riwayat'].forEach(t => {
+        const sec = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`tabBtn-${t}`);
+        if (t === tabName) {
+          sec.classList.remove('hidden');
+          btn.className = "px-3 py-1.5 text-xs font-medium rounded transition-all bg-opshid-surface dark:bg-opshid-darkSurface text-opshid-cobalt dark:text-blue-400 shadow-sm";
+        } else {
+          sec.classList.add('hidden');
+          btn.className = "px-3 py-1.5 text-xs font-medium rounded transition-all text-opshid-muted dark:text-opshid-darkMuted hover:text-opshid-ink dark:hover:text-opshid-darkInk";
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Interaksi Chip Tujuan
+    document.querySelectorAll('.tujuan-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.tujuan-chip').forEach(c => {
+          c.className = "tujuan-chip px-2 py-1.5 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 text-opshid-muted dark:text-opshid-darkMuted hover:border-opshid-cobalt text-center";
+        });
+        chip.className = "tujuan-chip px-2 py-1.5 rounded border border-opshid-cobalt bg-opshid-cobalt text-white font-medium text-center";
+        state.selectedTujuan = chip.dataset.val;
+      });
+    });
+
+    // Hitung Karakter Isu
+    document.getElementById('inputIsu').addEventListener('input', (e) => {
+      const len = e.target.value.length;
+      document.getElementById('charCountIsu').textContent = `${len} / 12000`;
+    });
+
+    /* =========================================================================
+       5. MANAJEMEN MEDIA JARINGAN (TAB 2)
+       ========================================================================= */
+
+    function renderMediaCheckboxes() {
+      const container = document.getElementById('mediaCheckboxesList');
+      if (state.mediaList.length === 0) {
+        container.innerHTML = `<span class="text-xs text-opshid-muted dark:text-opshid-darkMuted p-2">Belum ada media jaringan. Tambahkan lewat menu Media Jaringan.</span>`;
+        return;
+      }
+      container.innerHTML = state.mediaList.map(m => `
+        <label class="inline-flex items-center gap-1.5 bg-white dark:bg-black/40 border border-opshid-border dark:border-opshid-darkBorder rounded px-2.5 py-1 text-xs cursor-pointer hover:border-opshid-cobalt">
+          <input type="checkbox" name="selectedMediaCheckbox" value="${escapeHtml(m.id)}" checked class="rounded text-opshid-cobalt focus:ring-0">
+          <span class="font-medium">${escapeHtml(m.nama)}</span>
+          <span class="text-[10px] text-opshid-muted dark:text-opshid-darkMuted">(${escapeHtml(m.platform || '-')})</span>
+        </label>
+      `).join('');
+    }
+
+    function selectAllMedia(check) {
+      document.querySelectorAll('input[name="selectedMediaCheckbox"]').forEach(cb => cb.checked = check);
+    }
+
+    function renderMediaDirectory() {
+      const container = document.getElementById('mediaDirectoryList');
+      document.getElementById('mediaBadgeCount').textContent = state.mediaList.length;
+      document.getElementById('mediaTableTotal').textContent = `${state.mediaList.length} Media`;
+
+      if (state.mediaList.length === 0) {
+        container.innerHTML = `<p class="text-xs text-opshid-muted dark:text-opshid-darkMuted py-4">Belum ada media terdaftar. Silakan tambah media baru di sebelah kiri.</p>`;
+        return;
+      }
+
+      container.innerHTML = state.mediaList.map(m => `
+        <div class="border border-opshid-border dark:border-opshid-darkBorder p-4 rounded bg-opshid-surface dark:bg-opshid-darkSurface flex flex-col sm:flex-row items-start justify-between gap-3" id="media-card-${m.id}">
+          <div class="space-y-1.5 text-xs flex-1">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-opshid-ink dark:text-opshid-darkInk">${escapeHtml(m.nama)}</span>
+              <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-opshid-bg dark:bg-opshid-darkBg text-opshid-cobalt dark:text-blue-300 font-semibold">${escapeHtml(m.platform || 'Multiplatform')}</span>
+            </div>
+            <div><strong class="text-opshid-muted dark:text-opshid-darkMuted">Audiens:</strong> ${escapeHtml(m.audiens || '-')}</div>
+            <div><strong class="text-opshid-muted dark:text-opshid-darkMuted">Gaya Bahasa:</strong> ${escapeHtml(m.gaya || '-')}</div>
+            ${m.catatan ? `<div class="italic text-opshid-muted dark:text-opshid-darkMuted">"${escapeHtml(m.catatan)}"</div>` : ''}
+          </div>
+          <div class="flex items-center gap-2 self-end sm:self-start">
+            <button onclick="editMedia('${m.id}')" class="px-2.5 py-1 text-xs border border-opshid-border dark:border-opshid-darkBorder rounded hover:bg-black/5 dark:hover:bg-white/5">
+              Ubah
+            </button>
+            <div id="delete-zone-${m.id}">
+              <button onclick="promptDeleteMedia('${m.id}')" class="px-2.5 py-1 text-xs text-opshid-riskHigh border border-red-200 dark:border-red-900 rounded hover:bg-red-50 dark:hover:bg-red-950/40">
+                Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function promptDeleteMedia(id) {
+      const zone = document.getElementById(`delete-zone-${id}`);
+      zone.innerHTML = `
+        <div class="flex items-center gap-1.5 p-1 bg-red-50 dark:bg-red-950/50 rounded border border-red-300 dark:border-red-800 text-[11px]">
+          <span class="text-opshid-riskHigh font-semibold">Hapus media ini?</span>
+          <button onclick="confirmDeleteMedia('${id}')" class="px-1.5 py-0.5 bg-opshid-riskHigh text-white rounded text-[10px]">Ya, hapus</button>
+          <button onclick="renderMediaDirectory()" class="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 rounded text-[10px]">Batal</button>
+        </div>
+      `;
+    }
+
+    function confirmDeleteMedia(id) {
+      state.mediaList = state.mediaList.filter(m => m.id !== id);
+      saveMediaStorage();
+      renderMediaDirectory();
+      renderMediaCheckboxes();
+      showToast('Media berhasil dihapus');
+    }
+
+    function editMedia(id) {
+      const media = state.mediaList.find(m => m.id === id);
+      if (!media) return;
+      document.getElementById('mediaEditId').value = media.id;
+      document.getElementById('mediaNama').value = media.nama;
+      document.getElementById('mediaPlatform').value = media.platform || '';
+      document.getElementById('mediaAudiens').value = media.audiens || '';
+      document.getElementById('mediaGaya').value = media.gaya || '';
+      document.getElementById('mediaCatatan').value = media.catatan || '';
+
+      document.getElementById('mediaFormTitle').textContent = 'Ubah Media Jaringan';
+      document.getElementById('mediaSubmitBtn').textContent = 'Perbarui media';
+      document.getElementById('cancelEditMediaBtn').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetMediaForm() {
+      document.getElementById('mediaEditId').value = '';
+      document.getElementById('mediaManageForm').reset();
+      document.getElementById('mediaFormTitle').textContent = 'Tambah Media Jaringan';
+      document.getElementById('mediaSubmitBtn').textContent = 'Simpan media';
+      document.getElementById('cancelEditMediaBtn').classList.add('hidden');
+    }
+
+    function handleSaveMedia(e) {
+      e.preventDefault();
+      const id = document.getElementById('mediaEditId').value;
+      const nama = document.getElementById('mediaNama').value.trim();
+      const platform = document.getElementById('mediaPlatform').value.trim();
+      const audiens = document.getElementById('mediaAudiens').value.trim();
+      const gaya = document.getElementById('mediaGaya').value.trim();
+      const catatan = document.getElementById('mediaCatatan').value.trim();
+
+      if (!nama) return;
+
+      if (id) {
+        // Update
+        const idx = state.mediaList.findIndex(m => m.id === id);
+        if (idx !== -1) {
+          state.mediaList[idx] = { ...state.mediaList[idx], nama, platform, audiens, gaya, catatan, diubah: new Date().toISOString() };
+          showToast('Data media diperbarui');
+        }
+      } else {
+        // Tambah baru
+        const newMedia = {
+          id: 'm-' + Date.now(),
+          nama,
+          platform,
+          audiens,
+          gaya,
+          catatan,
+          dibuat: new Date().toISOString()
+        };
+        state.mediaList.push(newMedia);
+        showToast('Media baru berhasil ditambahkan');
+      }
+
+      saveMediaStorage();
+      resetMediaForm();
+      renderMediaDirectory();
+      renderMediaCheckboxes();
+    }
+
+    /* =========================================================================
+       6. PROMPT BUILDER & BACKEND AI DISPATCHER
+       ========================================================================= */
+
+    function getSelectedMediaObjects() {
+      const checkedBoxes = Array.from(document.querySelectorAll('input[name="selectedMediaCheckbox"]:checked'));
+      const checkedIds = checkedBoxes.map(cb => cb.value);
+      return state.mediaList.filter(m => checkedIds.includes(m.id));
+    }
+
+    function buildNarrativePrompt() {
+      const isu = document.getElementById('inputIsu').value.trim();
+      const posisi = document.getElementById('inputPosisi').value.trim();
+      const batasan = document.getElementById('inputBatasan').value.trim();
+      const hashtag = document.getElementById('inputHashtag').value.trim();
+      const waktu = document.getElementById('inputWaktu').value.trim();
+      const dokumentasi = document.getElementById('inputDokumentasi').value.trim();
+      const targetMedias = getSelectedMediaObjects();
+
+      let mediaSection = "(tidak ada; kosongkan array turunan)";
+      if (targetMedias.length > 0) {
+        mediaSection = targetMedias.map((m, idx) => 
+          `${idx + 1}. ${m.nama} | platform: ${m.platform || 'umum'} | audiens: ${m.audiens || 'publik'} | gaya bahasa: ${m.gaya || 'standar'} | catatan: ${m.catatan || '-'}`
+        ).join("\n");
+      }
+
+      return `Anda editor senior dan perencana narasi untuk OPSHID Media (media Organisasi Pemuda Shiddiqiyyah) beserta jejaring media di bawahnya. Jejaring berfungsi MENGAMPLIFIKASI pesan yang sama: sikap, key message, dan kalimat kunci tidak boleh berbeda antarmedia. Yang berbeda hanya pintu masuk, contoh, kalimat pembuka, dan diksi sesuai audiens tiap media.
+
+ISU:
+${isu}
+
+TUJUAN NARASI: ${state.selectedTujuan}
+POSISI OPSHID: ${posisi || "(belum ditentukan; ambil sikap paling hati-hati dan catat di perlu_dicek bahwa posisi perlu dikonfirmasi)"}
+BATASAN: ${batasan || "(tidak ada)"}
+HASHTAG WAJIB: ${hashtag || "(belum ada; usulkan satu hashtag kampanye yang singkat dan unik, lalu pakai di semua media)"}
+WAKTU TAYANG YANG DITUJU: ${waktu || "(tidak ditentukan; usulkan waktu yang paling dekat dengan momentum isu)"}
+DOKUMENTASI YANG TERSEDIA: ${dokumentasi || "(tidak disebutkan; sarankan jenis dokumentasi yang realistis untuk diambil tim)"}
+
+MEDIA JARINGAN:
+${mediaSection}
+
+ATURAN PENULISAN:
+- Bahasa Indonesia yang presisi dan profesional. Hindari klise dan frasa generik seperti "membumi", "di era digital", "tak lekang oleh waktu", "mari bersama-sama", "sinergi dan kolaborasi".
+- Berbasis data dan fakta, bukan puitis atau hiperbolik. Kalimat pendek dan langsung.
+- Anda tidak dapat mengecek internet. Jangan mengarang angka, tanggal, nama, atau kutipan. Jika poin butuh data, tulis di "dasar" jenis data yang perlu dicari, tandai angka yang belum pasti sebagai [angka], dan masukkan ke perlu_dicek.
+- Judul bergaya kutipan memakai [nama tokoh] kecuali nama dan kutipan diberikan di input.
+- Patuhi posisi dan batasan. Jangan menyerang pihak lain.
+- Buat tepat satu turunan untuk setiap media jaringan, dengan nama media persis seperti di daftar.
+- Bank judul: 8-10 judul, masing-masing bergaya salah satu dari "Informatif", "Pertanyaan", "Angka/Data", "Kutipan".
+- Poin pendukung 3 butir. Titik sensitif 2-4 butir. Hindari 2-3 pasang. Kontra-narasi 2-3 pasang.
+- Paragraf acuan narasi induk: 4-5 paragraf, total 300-400 kata, urutan: (1) pembuka apa dan mengapa sekarang, (2) konteks dan latar, (3) posisi OPSHID dan argumennya, (4) data atau contoh konkret dengan penanda [angka]/[nama program] bila belum pasti, (5) penutup yang memuat kalimat kunci persis.
+- Hashtag per media: hashtag wajib selalu di urutan pertama, ditambah 1-3 hashtag pendamping yang cocok dengan platform media itu. Jangan memakai hashtag generik yang terlalu umum.
+- Rekomendasi waktu tayang: isi tayang_induk untuk OPSHID Media (tayang pertama sebagai rujukan) dan jam_tayang untuk tiap media dengan format "Hari, tanggal, HH.MM WIB". Beri jarak antarmedia agar amplifikasi berurutan, tidak serentak. urutan dimulai dari 1. Alasan singkat berdasarkan kebiasaan umum audiens platform tersebut.
+- Saran gambar dokumentasi: 2-3 per media. Utamakan dokumentasi yang tersedia. Jelaskan komposisi yang dicari dan beri satu kalimat keterangan foto. Jangan menyarankan gambar stok atau gambar buatan AI.
+
+Balas HANYA dengan satu objek JSON, tanpa teks lain. Skema JSON:
+{
+  "judul_isu": "string, maks 10 kata",
+  "narasi_induk": {
+    "key_message": "string",
+    "kalimat_kunci": "string",
+    "poin_pendukung": [{ "poin": "string", "dasar": "string" }],
+    "nada": "string",
+    "paragraf": ["string"]
+  },
+  "tayang_induk": { "waktu": "string", "alasan": "string" },
+  "judul": [{ "gaya": "Informatif|Pertanyaan|Angka/Data|Kutipan", "teks": "string" }],
+  "turunan": [{
+    "media": "string",
+    "pintu_masuk": "string",
+    "judul": "string",
+    "pembuka": "string",
+    "diksi": ["string"],
+    "hashtag": ["string"],
+    "jam_tayang": { "urutan": 1, "waktu": "string", "alasan": "string" },
+    "saran_gambar": [{ "jenis": "string", "komposisi": "string", "keterangan": "string" }],
+    "catatan": "string"
+  }],
+  "risiko": {
+    "tingkat": "rendah|sedang|tinggi",
+    "alasan": "string",
+    "titik_sensitif": ["string"],
+    "hindari": [{ "framing": "string", "ganti": "string" }],
+    "kontra_narasi": [{ "klaim": "string", "jawaban": "string" }]
+  },
+  "perlu_dicek": ["string"]
+}`;
+    }
+
+    function copyConstructedPrompt() {
+      const promptText = buildNarrativePrompt();
+      copyToClipboardText(promptText, "Prompt lengkap berhasil disalin ke clipboard! Siap ditempel ke AI chatbot luar.");
+    }
+
+    async function handleGenerateNarrative(e) {
+      e.preventDefault();
+      hideError();
+
+      const isuText = document.getElementById('inputIsu').value.trim();
+      if (!isuText) {
+        showError("Isi kolom isu terlebih dahulu.");
+        return;
+      }
+      if (isuText.length > 12000) {
+        showError("Teks isu terlalu panjang. Ringkas atau potong beritanya.");
+        return;
+      }
+
+      setLoadingState(true);
+      state.abortController = new AbortController();
+
+      const prompt = buildNarrativePrompt();
+      const targetMedias = getSelectedMediaObjects();
+
+      try {
+        let resultJson = null;
+
+        if (state.apiProvider === 'gemini' && state.apiSecret) {
+          resultJson = await callGeminiAPI(prompt, state.apiSecret, state.abortController.signal);
+        } else if (state.apiProvider === 'openai' && state.apiSecret) {
+          resultJson = await callOpenAIAPI(prompt, state.apiSecret, state.abortController.signal);
+        } else {
+          // Simulasi Redaksi Realistis bila tanpa API Key
+          resultJson = await simulateServerNarrativeGeneration(isuText, targetMedias, state.abortController.signal);
+        }
+
+        // Simpan Hasil
+        state.currentResult = resultJson;
+        
+        // Simpan ke Riwayat
+        const historyItem = {
+          id: 'hist-' + Date.now(),
+          dibuat: new Date().toISOString(),
+          input: {
+            isu: isuText,
+            tujuan: state.selectedTujuan,
+            posisi: document.getElementById('inputPosisi').value.trim(),
+            waktu: document.getElementById('inputWaktu').value.trim(),
+            jumlahMedia: targetMedias.length
+          },
+          hasil: resultJson
+        };
+        state.historyList.unshift(historyItem);
+        saveHistoryStorage();
+
+        // Render ke Layar
+        renderNarrativeResult(resultJson, false);
+        showToast("Peta narasi berhasil disusun dan diarsipkan ke riwayat.");
+        
+        // Sembunyikan banner contoh
+        document.getElementById('sampleNoticeBanner').classList.add('hidden');
+
+      } catch (err) {
+        if (err.name === 'AbortError' || err.message === 'ABORTED') {
+          showError("Penyusunan dihentikan.");
+        } else if (err.message.includes('JSON_PARSE_ERROR')) {
+          showError("Hasil tidak terbaca utuh. Coba susun ulang.");
+        } else if (err.message.includes('429') || err.message.includes('quota')) {
+          showError("Terlalu banyak permintaan. Tunggu sebentar, lalu coba lagi.");
+        } else {
+          showError(err.message || "Koneksi ke AI terputus. Coba lagi.");
+        }
+      } finally {
+        setLoadingState(false);
+      }
+    }
+
+    function handleAbort() {
+      if (state.abortController) {
+        state.abortController.abort();
+      }
+    }
+
+    function setLoadingState(isLoading) {
+      state.isGenerating = isLoading;
+      const btnSubmit = document.getElementById('btnSubmitNarrative');
+      const btnAbort = document.getElementById('btnAbortNarrative');
+      const progress = document.getElementById('processIndicator');
+      const charCounter = document.getElementById('charStreamCounter');
+
+      if (isLoading) {
+        btnSubmit.classList.add('hidden');
+        btnAbort.classList.remove('hidden');
+        progress.classList.remove('hidden');
+        charCounter.textContent = 'Menganalisis...';
+      } else {
+        btnSubmit.classList.remove('hidden');
+        btnAbort.classList.add('hidden');
+        progress.classList.add('hidden');
+      }
+    }
+
+    function showError(msg) {
+      const errBox = document.getElementById('formError');
+      errBox.textContent = msg;
+      errBox.classList.remove('hidden');
+    }
+    function hideError() {
+      document.getElementById('formError').classList.add('hidden');
+    }
+
+    /* -------------------------------------------------------------
+       Panggilan API Nyata (Gemini & OpenAI Structured JSON)
+       ------------------------------------------------------------- */
+    async function callGeminiAPI(prompt, apiKey, signal) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const payload = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          response_mime_type: "application/json",
+          maxOutputTokens: 6000,
+          temperature: 0.2
+        }
+      };
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) throw new Error("Terlalu banyak permintaan. Tunggu sebentar, lalu coba lagi.");
+        throw new Error(`Koneksi ke AI terputus. Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      try {
+        const text = data.candidates[0].content.parts[0].text;
+        return JSON.parse(text);
+      } catch(e) {
+        throw new Error("JSON_PARSE_ERROR");
+      }
+    }
+
+    async function callOpenAIAPI(prompt, apiKey, signal) {
+      const url = `https://api.openai.com/v1/chat/completions`;
+      const payload = {
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: "Anda editor senior dan perencana narasi untuk OPSHID Media. Balas HANYA satu objek JSON valid." },
+          { role: "user", content: prompt }
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: 5000,
+        temperature: 0.2
+      };
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify(payload),
+        signal
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) throw new Error("Terlalu banyak permintaan. Tunggu sebentar, lalu coba lagi.");
+        throw new Error(`Koneksi ke AI terputus. Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      try {
+        const text = data.choices[0].message.content;
+        return JSON.parse(text);
+      } catch(e) {
+        throw new Error("JSON_PARSE_ERROR");
+      }
+    }
+
+    /* Simulasi cerdas bila belum memasang API key langsung */
+    async function simulateServerNarrativeGeneration(isu, medias, signal) {
+      const progressBar = document.getElementById('progressBar');
+      const counter = document.getElementById('charStreamCounter');
+
+      for (let p = 20; p <= 95; p += 15) {
+        if (signal.aborted) throw new Error("ABORTED");
+        progressBar.style.width = `${p}%`;
+        counter.textContent = `${Math.floor(p * 35)} karakter tertulis...`;
+        await new Promise(r => setTimeout(r, 400));
+      }
+
+      const cleanIsu = isu.slice(0, 70).replace(/[\n\r]+/g, ' ');
+      const hashtagWajib = document.getElementById('inputHashtag').value.trim() || '#OPSHIDBergerak';
+      const targetWaktu = document.getElementById('inputWaktu').value.trim() || 'Kamis, 28 Oktober 2026, 08.00 WIB';
+
+      return {
+        judul_isu: cleanIsu.length > 5 ? cleanIsu : "Strategi Komunikasi Isu Kebangsaan OPSHID",
+        narasi_induk: {
+          key_message: `Menyikapi perkembangan terkini mengenai "${cleanIsu}", OPSHID Media menegaskan komitmen pengabdian sosial dan kejernihan informasi demi persatuan bangsa.`,
+          kalimat_kunci: `Kemandirian moral dan khidmah nyata adalah benteng martabat bangsa.`,
+          poin_pendukung: [
+            {
+              poin: "Mendorong kejernihan data agar narasi yang beredar tidak menimbulkan kegaduhan publik yang destruktif.",
+              dasar: "Verifikasi lapangan dari [angka] pos koordinasi wilayah."
+            },
+            {
+              poin: "Menjaga koridor kesantunan ormas dan memfokuskan energi pada pemecahan masalah rakyat.",
+              dasar: "Pedoman dasar kepemudaan Shiddiqiyyah pasal gotong royong."
+            },
+            {
+              poin: "Menguatkan soliditas seluruh jejaring media agar menyampaikan satu frekuensi pesan kebaikan.",
+              dasar: "Hasil rapat koordinasi dewan redaksi media jejaring."
+            }
+          ],
+          nada: "Faktual, terukur, santun, dan solutif",
+          paragraf: [
+            `Isu mengenai ${cleanIsu} menjadi perhatian luas publik saat ini. Di tengah derasnya arus spekulasi, ruang redaksi OPSHID memandang perlu adanya panduan narasi yang proporsional dan menyejukkan.`,
+            "Konteks persoalan ini menuntut setiap elemen untuk menahan diri dari prasangka yang tidak beralasan. Kita meyakini bahwa setiap perbedaan sudut pandang dapat dijembatani melalui dialog santun dan komitmen pada kebenaran objektif.",
+            "Posisi OPSHID senantiasa berakar pada cita-cita luhur perdamaian dan kemanusiaan. Sikap kami jelas: mengutamakan kemaslahatan bersama di atas kepentingan sektoral sesaat demi menjaga ketahanan sosial.",
+            "Langkah nyata yang telah disiapkan meliputi pelibatan [angka] sukarelawan penerangan publik guna mengklarifikasi disinformasi secara santun di tingkat akar rumput.",
+            "Dengan berpegang teguh pada prinsip ketulusan berbakti, kita songsong masa depan dengan optimisme: Kemandirian moral dan khidmah nyata adalah benteng martabat bangsa."
+          ]
+        },
+        tayang_induk: {
+          waktu: targetWaktu,
+          alasan: "Ditayangkan sebagai pembuka diskursus resmi agar menjadi acuan kutipan media jejaring."
+        },
+        judul: [
+          { gaya: "Informatif", teks: `Sikap Resmi OPSHID Media Terhadap Isu ${cleanIsu.slice(0, 35)}` },
+          { gaya: "Informatif", teks: "Klarifikasi dan Komitmen Redaksi Demi Kejernihan Ruang Publik" },
+          { gaya: "Pertanyaan", teks: `Bagaimana Solusi Terbaik Mengurai Polemik ${cleanIsu.slice(0, 30)}?` },
+          { gaya: "Pertanyaan", teks: "Apa Tanggung Jawab Moral Kita di Tengah Silang Pendapat?" },
+          { gaya: "Angka/Data", teks: `[angka] Simpul Gerakan Bersatu Menyuarakan Narasi Kesejukan` },
+          { gaya: "Angka/Data", teks: "Rekam Jejak [angka] Program Nyata OPSHID Jadi Penguat Kepercayaan Warga" },
+          { gaya: "Kutipan", teks: "[Pimpinan OPSHID]: Menjaga Frekuensi Damai Adalah Tugas Keimanan" },
+          { gaya: "Kutipan", teks: "[Tokoh Shiddiqiyyah]: Bicara dengan Karya Nyata Jauh Lebih Utama" }
+        ],
+        turunan: medias.map((m, idx) => ({
+          media: m.nama,
+          pintu_masuk: `Disesuaikan dengan platform ${m.platform || 'digital'} dan audiens ${m.audiens || 'umum'}.`,
+          judul: `Suara Bersama: Menanggapi ${cleanIsu.slice(0, 25)} Secara Arif`,
+          pembuka: `Setiap tantangan mengharuskan kita bersikap matang. Melalui saluran ${m.nama}, kami mengajak pembaca melihat esensi persoalan dengan kepala dingin.`,
+          diksi: ["keberdayaan", "gotong royong", "kesantunan", "solutif"],
+          hashtag: [hashtagWajib, "#IndonesiaDamai", "#OPSHIDKhidmah"],
+          jam_tayang: {
+            urutan: idx + 1,
+            waktu: `Kamis, 28 Oktober 2026, 0${8 + idx * 2}.00 WIB`,
+            alasan: `Menyesuaikan puncak keaktifan audiens pada platform ${m.platform || 'jejaring'}.`
+          },
+          saran_gambar: [
+            { jenis: "Foto Dokumentasi", komposisi: "Medium shot aktivitas koordinasi tim dengan pencahayaan hangat", keterangan: "Diskusi editorial menyelaraskan langkah dakwah bil hal." },
+            { jenis: "Infografik Singkat", komposisi: "Tipografi kontras dengan latar belakang hijau tua redaksi", keterangan: "Poin-poin penting klarifikasi isu untuk disebarkan di status." }
+          ],
+          catatan: `Pastikan admin ${m.nama} merespons kolom komentar dengan sopan tanpa terpancing provokasi.`
+        })),
+        risiko: {
+          tingkat: "sedang",
+          alasan: "Isu mengandung multitafsir publik yang rentan dipelintir jika pemilihan diksi tidak presisi.",
+          titik_sensitif: [
+            "Potensi salah kutip pernyataan sikap yang dipotong di luar konteks.",
+            "Sentimen kelompok kontra yang mencoba mendiskreditkan nama baik lembaga."
+          ],
+          hindari: [
+            {
+              framing: "Menyudutkan pihak yang berbeda pandangan secara personal.",
+              ganti: "Fokus pada substansi masalah dan solusi kemaslahatan."
+            },
+            {
+              framing: "Memakai bahasa reaktif atau bernada emosional.",
+              ganti: "Memakai diksi yang lugas, terukur, dan berbasis fakta lapangan."
+            }
+          ],
+          kontra_narasi: [
+            {
+              klaim: "Organisasi lambat atau acuh terhadap dinamika persoalan.",
+              jawaban: "OPSHID memilih bersikap berbasis data utuh dan verifikasi lapangan, bukan reaktif di media sosial."
+            }
+          ]
+        },
+        perlu_dicek: [
+          "Verifikasi angka [angka] pada data pendukung sebelum diunggah ke publik.",
+          "Konfirmasi kutipan tokoh kepada juru bicara resmi.",
+          "Pastikan kalimat kunci tidak diubah satu kata pun oleh redaksi jejaring."
+        ]
+      };
+    }
+
+    /* =========================================================================
+       7. TAMPILAN HASIL (RENDER TAB SUSUN NARASI)
+       ========================================================================= */
+
+    function renderNarrativeResult(res, isSample = false) {
+      if (!res) return;
+
+      const container = document.getElementById('resultContentArea');
+      const sampleNotice = document.getElementById('sampleNoticeBanner');
+      if (isSample) {
+        sampleNotice.classList.remove('hidden');
+      } else {
+        sampleNotice.classList.add('hidden');
+      }
+
+      // Risiko styling
+      const riskLevel = (res.risiko && res.risiko.tingkat) ? res.risiko.tingkat.toLowerCase() : 'rendah';
+      let riskBorder = 'border-opshid-riskLow';
+      let riskBadge = 'bg-emerald-100 text-opshid-riskLow dark:bg-emerald-950 dark:text-emerald-300';
+      if (riskLevel === 'sedang') {
+        riskBorder = 'border-opshid-riskMed';
+        riskBadge = 'bg-amber-100 text-opshid-riskMed dark:bg-amber-950 dark:text-amber-300';
+      } else if (riskLevel === 'tinggi') {
+        riskBorder = 'border-opshid-riskHigh';
+        riskBadge = 'bg-red-100 text-opshid-riskHigh dark:bg-red-950 dark:text-red-300';
+      }
+
+      // Waktu sekarang
+      const compiledTime = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' });
+
+      let html = '';
+
+      // Banner Atas + Tombol Salin Semua untuk WA
+      html += `
+        <div class="bg-opshid-surface dark:bg-opshid-darkSurface border border-opshid-border dark:border-opshid-darkBorder p-4 rounded flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+          <div>
+            <div class="text-[11px] font-mono text-opshid-muted dark:text-opshid-darkMuted uppercase tracking-wider">Waktu Penyusunan</div>
+            <div class="text-xs font-semibold">${compiledTime} WIB</div>
+          </div>
+          <button onclick="copyAllWhatsApp()" class="w-full sm:w-auto px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded font-medium text-xs flex items-center justify-center gap-2 shadow transition-all">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.199.534 1.286.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.353.101.173.449.741.964 1.2 1.11 1.002 1.621 1.157 1.83 1.246.174.072.275.058.376-.058.101-.116.433-.505.549-.679.116-.173.231-.145.39-.087s1.011.477 1.184.563c.173.087.289.13.332.202.043.073.043.419-.101.824z"/></svg>
+            <span>Salin semua untuk WhatsApp</span>
+          </button>
+        </div>
+      `;
+
+      // Judul Kerja Isu
+      html += `
+        <div>
+          <div class="text-[11px] font-mono uppercase tracking-widest text-opshid-cobalt dark:text-blue-400 font-bold mb-1">Peta Narasi Terkoordinasi</div>
+          <h1 class="text-2xl sm:text-3xl font-serif font-bold text-opshid-ink dark:text-opshid-darkInk leading-tight">
+            ${escapeHtml(res.judul_isu || 'Narasi Isu OPSHID')}
+          </h1>
+        </div>
+      `;
+
+      // ==========================================
+      // A. NARASI INDUK
+      // ==========================================
+      if (res.narasi_induk) {
+        const ni = res.narasi_induk;
+        html += `
+          <div class="border border-opshid-border dark:border-opshid-darkBorder rounded bg-opshid-surface dark:bg-opshid-darkSurface p-5 sm:p-6 space-y-5">
+            <div class="border-b border-opshid-border dark:border-opshid-darkBorder pb-2 flex items-center justify-between">
+              <h2 class="font-serif font-bold text-lg text-opshid-ink dark:text-opshid-darkInk flex items-center gap-2">
+                <span>A. Narasi Induk</span>
+              </h2>
+              ${ni.nada ? `<span class="text-xs font-mono bg-opshid-bg dark:bg-opshid-darkBg px-2 py-0.5 rounded text-opshid-muted dark:text-opshid-darkMuted">Nada: ${escapeHtml(ni.nada)}</span>` : ''}
+            </div>
+
+            <!-- Key Message -->
+            <div>
+              <div class="text-[11px] font-mono uppercase text-opshid-muted dark:text-opshid-darkMuted mb-1 font-semibold">Key Message (Pesan Inti)</div>
+              <p class="font-serif text-lg sm:text-xl font-bold text-opshid-ink dark:text-opshid-darkInk leading-snug">
+                "${escapeHtml(ni.key_message || '')}"
+              </p>
+            </div>
+
+            <!-- Kalimat Kunci (Stabilo Kuning) -->
+            ${ni.kalimat_kunci ? `
+              <div class="p-3.5 bg-opshid-highlight text-black rounded border border-amber-300 shadow-sm space-y-1">
+                <div class="text-[10px] font-mono uppercase tracking-wider font-bold text-neutral-800">
+                  Kalimat kunci &middot; wajib sama di semua media
+                </div>
+                <div class="font-serif font-bold text-base sm:text-lg leading-snug text-neutral-950">
+                  "${escapeHtml(ni.kalimat_kunci)}"
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- 3 Poin Pendukung -->
+            ${ni.poin_pendukung && ni.poin_pendukung.length > 0 ? `
+              <div>
+                <div class="text-[11px] font-mono uppercase text-opshid-muted dark:text-opshid-darkMuted mb-2 font-semibold">Poin Pendukung & Basis Data</div>
+                <div class="space-y-2.5">
+                  ${ni.poin_pendukung.map((p, idx) => `
+                    <div class="flex items-start gap-2.5 text-xs bg-opshid-bg dark:bg-opshid-darkBg p-3 rounded border border-opshid-border dark:border-opshid-darkBorder">
+                      <span class="font-mono font-bold text-opshid-cobalt dark:text-blue-400 text-sm leading-none mt-0.5">${idx + 1}.</span>
+                      <div class="space-y-1">
+                        <div class="font-semibold text-opshid-ink dark:text-opshid-darkInk">${escapeHtml(p.poin)}</div>
+                        <div class="text-[11px] text-opshid-muted dark:text-opshid-darkMuted font-mono">Dasar: ${escapeHtml(p.dasar || '-')}</div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Paragraf Acuan -->
+            ${ni.paragraf && ni.paragraf.length > 0 ? `
+              <div class="border border-opshid-border dark:border-opshid-darkBorder rounded bg-white dark:bg-black/30 p-4 space-y-3">
+                <div class="flex items-center justify-between border-b border-opshid-border dark:border-opshid-darkBorder pb-2">
+                  <div class="text-xs font-mono uppercase font-bold text-opshid-cobalt dark:text-blue-400">
+                    Paragraf Acuan (300&ndash;400 Kata)
+                  </div>
+                  <button onclick="copyReferenceParagraphs()" class="text-xs px-2.5 py-1 rounded border border-opshid-border dark:border-opshid-darkBorder hover:bg-black/5 dark:hover:bg-white/5 font-mono flex items-center gap-1">
+                    <span>Salin paragraf</span>
+                  </button>
+                </div>
+                <div class="space-y-2.5 font-serif text-sm leading-relaxed text-opshid-ink/90 dark:text-opshid-darkInk/90">
+                  ${ni.paragraf.map(par => `<p class="indent-4">${escapeHtml(par)}</p>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+          </div>
+        `;
+      }
+
+      // ==========================================
+      // B. BANK JUDUL
+      // ==========================================
+      if (res.judul && res.judul.length > 0) {
+        // Kelompokkan per gaya
+        const gayaList = ["Informatif", "Pertanyaan", "Angka/Data", "Kutipan"];
+        const grouped = {};
+        gayaList.forEach(g => grouped[g] = []);
+        res.judul.forEach(j => {
+          if (!grouped[j.gaya]) grouped[j.gaya] = [];
+          grouped[j.gaya].push(j.teks);
+        });
+
+        html += `
+          <div class="border border-opshid-border dark:border-opshid-darkBorder rounded bg-opshid-surface dark:bg-opshid-darkSurface p-5 space-y-4">
+            <div class="border-b border-opshid-border dark:border-opshid-darkBorder pb-2">
+              <h2 class="font-serif font-bold text-lg">B. Bank Judul Berita & Konten</h2>
+              <p class="text-xs text-opshid-muted dark:text-opshid-darkMuted">Pilihan alternatif judul yang dikurasi menurut karakter gaya editorial.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${gayaList.map(gaya => {
+                const items = grouped[gaya] || [];
+                if (items.length === 0) return '';
+                return `
+                  <div class="border border-opshid-border dark:border-opshid-darkBorder rounded p-3 bg-opshid-bg dark:bg-opshid-darkBg space-y-2">
+                    <div class="text-[11px] font-mono uppercase font-bold text-opshid-cobalt dark:text-blue-400 flex items-center justify-between">
+                      <span>${gaya}</span>
+                      <span class="text-[10px] text-opshid-muted dark:text-opshid-darkMuted font-normal">${items.length} opsi</span>
+                    </div>
+                    <div class="space-y-2">
+                      ${items.map(title => `
+                        <div class="bg-white dark:bg-black/40 p-2 rounded text-xs flex items-start justify-between gap-2 border border-opshid-border dark:border-opshid-darkBorder">
+                          <span class="font-medium flex-1">${escapeHtml(title)}</span>
+                          <button onclick="copySingleTitle('${escapeAttr(title)}')" class="shrink-0 p-1 text-opshid-muted dark:text-opshid-darkMuted hover:text-opshid-cobalt dark:hover:text-blue-400" title="Salin judul">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                          </button>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // ==========================================
+      // C. TURUNAN PER MEDIA
+      // ==========================================
+      if (res.turunan && res.turunan.length > 0) {
+        html += `
+          <div class="space-y-4">
+            <div class="border-b border-opshid-border dark:border-opshid-darkBorder pb-2">
+              <h2 class="font-serif font-bold text-lg">C. Turunan Pesan Tiap Media Jaringan</h2>
+              <p class="text-xs text-opshid-muted dark:text-opshid-darkMuted">Adaptasi sudut pandang, pembuka, jam tayang, dan visual untuk masing-masing akun.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${res.turunan.map((t, idx) => `
+                <div class="border border-opshid-border dark:border-opshid-darkBorder bg-opshid-surface dark:bg-opshid-darkSurface rounded p-4 flex flex-col justify-between space-y-3.5 shadow-sm">
+                  
+                  <!-- Header Card -->
+                  <div class="flex items-start justify-between gap-2 border-b border-opshid-border dark:border-opshid-darkBorder pb-2">
+                    <div>
+                      <div class="font-serif font-bold text-base text-opshid-ink dark:text-opshid-darkInk">${escapeHtml(t.media)}</div>
+                      <div class="text-[11px] text-opshid-muted dark:text-opshid-darkMuted">Pintu Masuk: <span class="font-medium text-opshid-ink dark:text-opshid-darkInk">${escapeHtml(t.pintu_masuk || '-')}</span></div>
+                    </div>
+                    <button onclick="copyMediaCardWhatsApp(${idx})" class="shrink-0 px-2 py-1 text-[11px] font-mono rounded border border-emerald-600 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40" title="Salin format WhatsApp">
+                      Salin WA
+                    </button>
+                  </div>
+
+                  <div class="space-y-2.5 text-xs">
+                    <!-- Judul Konten -->
+                    <div>
+                      <span class="text-[10px] font-mono uppercase text-opshid-muted dark:text-opshid-darkMuted">Usulan Judul:</span>
+                      <div class="font-bold text-sm text-opshid-cobalt dark:text-blue-400">${escapeHtml(t.judul || '-')}</div>
+                    </div>
+
+                    <!-- Pembuka -->
+                    ${t.pembuka ? `
+                      <div class="bg-opshid-bg dark:bg-opshid-darkBg p-2.5 rounded border border-opshid-border dark:border-opshid-darkBorder italic text-xs leading-relaxed">
+                        &ldquo;${escapeHtml(t.pembuka)}&rdquo;
+                      </div>
+                    ` : ''}
+
+                    <!-- Diksi & Hashtags -->
+                    <div class="space-y-1.5">
+                      ${t.diksi && t.diksi.length > 0 ? `
+                        <div class="flex flex-wrap items-center gap-1">
+                          <span class="text-[10px] font-mono text-opshid-muted dark:text-opshid-darkMuted mr-1">Diksi:</span>
+                          ${t.diksi.map(d => `<span class="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-[10px] font-mono">${escapeHtml(d)}</span>`).join('')}
+                        </div>
+                      ` : ''}
+
+                      ${t.hashtag && t.hashtag.length > 0 ? `
+                        <div class="flex flex-wrap items-center gap-1">
+                          <span class="text-[10px] font-mono text-opshid-muted dark:text-opshid-darkMuted mr-1">Hashtag:</span>
+                          ${t.hashtag.map(h => `<span class="px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-opshid-cobalt dark:text-blue-300 text-[10px] font-mono font-medium">${escapeHtml(h)}</span>`).join('')}
+                        </div>
+                      ` : ''}
+                    </div>
+
+                    <!-- Jam Tayang -->
+                    ${t.jam_tayang ? `
+                      <div class="border-t border-opshid-border dark:border-opshid-darkBorder pt-2 text-xs">
+                        <span class="text-[10px] font-mono uppercase text-opshid-muted dark:text-opshid-darkMuted">Rekomendasi Tayang:</span>
+                        <div class="font-bold font-mono text-xs">${escapeHtml(t.jam_tayang.waktu || '-')}</div>
+                        ${t.jam_tayang.alasan ? `<div class="text-[11px] text-opshid-muted dark:text-opshid-darkMuted mt-0.5">${escapeHtml(t.jam_tayang.alasan)}</div>` : ''}
+                      </div>
+                    ` : ''}
+
+                    <!-- Saran Gambar -->
+                    ${t.saran_gambar && t.saran_gambar.length > 0 ? `
+                      <div class="border-t border-opshid-border dark:border-opshid-darkBorder pt-2 space-y-1">
+                        <span class="text-[10px] font-mono uppercase text-opshid-muted dark:text-opshid-darkMuted">Saran Dokumentasi Visual:</span>
+                        <div class="space-y-1.5">
+                          ${t.saran_gambar.map(g => `
+                            <div class="text-[11px] bg-opshid-bg dark:bg-opshid-darkBg p-2 rounded">
+                              <span class="font-semibold text-opshid-ink dark:text-opshid-darkInk">${escapeHtml(g.jenis || 'Foto')}:</span>
+                              ${g.komposisi ? `<span> ${escapeHtml(g.komposisi)}.</span>` : ''}
+                              ${g.keterangan ? `<div class="italic text-opshid-muted dark:text-opshid-darkMuted mt-0.5">&ldquo;${escapeHtml(g.keterangan)}&rdquo;</div>` : ''}
+                            </div>
+                          `).join('')}
+                        </div>
+                      </div>
+                    ` : ''}
+
+                    <!-- Catatan -->
+                    ${t.catatan ? `
+                      <div class="text-[11px] text-opshid-muted dark:text-opshid-darkMuted border-t border-opshid-border dark:border-opshid-darkBorder pt-1.5">
+                        <strong>Catatan Redaktur:</strong> ${escapeHtml(t.catatan)}
+                      </div>
+                    ` : ''}
+
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // ==========================================
+      // D. PETA RISIKO
+      // ==========================================
+      if (res.risiko) {
+        const r = res.risiko;
+        html += `
+          <div class="border-l-4 ${riskBorder} border border-opshid-border dark:border-opshid-darkBorder rounded bg-opshid-surface dark:bg-opshid-darkSurface p-5 sm:p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-opshid-border dark:border-opshid-darkBorder pb-2">
+              <h2 class="font-serif font-bold text-lg">D. Peta Risiko & Manajemen Isu</h2>
+              <span class="text-xs font-mono uppercase font-bold px-2.5 py-1 rounded ${riskBadge}">
+                Tingkat Risiko: ${escapeHtml(r.tingkat || 'Sedang')}
+              </span>
+            </div>
+
+            ${r.alasan ? `<p class="text-xs text-opshid-muted dark:text-opshid-darkMuted">${escapeHtml(r.alasan)}</p>` : ''}
+
+            <!-- Titik Sensitif -->
+            ${r.titik_sensitif && r.titik_sensitif.length > 0 ? `
+              <div>
+                <div class="text-[11px] font-mono uppercase text-opshid-muted dark:text-opshid-darkMuted mb-1 font-semibold">Titik Sensitif Redaksi</div>
+                <ul class="list-disc list-inside text-xs space-y-1 text-opshid-ink dark:text-opshid-darkInk">
+                  ${r.titik_sensitif.map(ts => `<li>${escapeHtml(ts)}</li>`).join('')}
+                </ul>
+              </div>
+            ` : ''}
+
+            <!-- Hindari -> Ganti Dengan -->
+            ${r.hindari && r.hindari.length > 0 ? `
+              <div>
+                <div class="text-[11px] font-mono uppercase text-opshid-muted dark:text-opshid-darkMuted mb-2 font-semibold">Pasangan Framing Narasi</div>
+                <div class="space-y-2">
+                  ${r.hindari.map(h => `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      <div class="p-2.5 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-950 dark:text-rose-200">
+                        <span class="text-[10px] font-mono uppercase font-bold text-opshid-riskHigh block mb-0.5">Hindari</span>
+                        ${escapeHtml(h.framing)}
+                      </div>
+                      <div class="p-2.5 rounded bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-emerald-950 dark:text-emerald-200">
+                        <span class="text-[10px] font-mono uppercase font-bold text-opshid-riskLow block mb-0.5">Ganti Dengan</span>
+                        ${escapeHtml(h.ganti)}
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Kontra Narasi (Klaim -> Jawaban) -->
+            ${r.kontra_narasi && r.kontra_narasi.length > 0 ? `
+              <div>
+                <div class="text-[11px] font-mono uppercase text-opshid-muted dark:text-opshid-darkMuted mb-2 font-semibold">Kontra-Narasi & Tanggapan Cepat</div>
+                <div class="space-y-2 text-xs">
+                  ${r.kontra_narasi.map(kn => `
+                    <div class="p-3 bg-opshid-bg dark:bg-opshid-darkBg rounded border border-opshid-border dark:border-opshid-darkBorder space-y-1">
+                      <div><strong class="text-opshid-riskHigh">Klaim Miring:</strong> ${escapeHtml(kn.klaim)}</div>
+                      <div><strong class="text-opshid-riskLow">Jawaban Redaksi:</strong> ${escapeHtml(kn.jawaban)}</div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+          </div>
+        `;
+      }
+
+      // ==========================================
+      // E. JADWAL AMPLIFIKASI (TIMELINE VERTIKAL)
+      // ==========================================
+      html += `
+        <div class="border border-opshid-border dark:border-opshid-darkBorder rounded bg-opshid-surface dark:bg-opshid-darkSurface p-5 space-y-4">
+          <div class="border-b border-opshid-border dark:border-opshid-darkBorder pb-2">
+            <h2 class="font-serif font-bold text-lg">E. Jadwal Amplifikasi Terpadu</h2>
+            <p class="text-xs text-opshid-muted dark:text-opshid-darkMuted">Rangkaian urutan waktu siar untuk menciptakan gelombang gaung yang rapi.</p>
+          </div>
+
+          <div class="relative border-l-2 border-opshid-border dark:border-opshid-darkBorder ml-3.5 my-3 space-y-5">
+            
+            <!-- Induk Selalu Pertama -->
+            <div class="relative pl-6">
+              <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-opshid-cobalt border-4 border-opshid-surface dark:border-opshid-darkSurface"></div>
+              <div class="text-xs font-mono font-bold text-opshid-cobalt dark:text-blue-400">
+                ${escapeHtml((res.tayang_induk && res.tayang_induk.waktu) || 'Pukul 06.00 WIB (Rujukan Awal)')}
+              </div>
+              <div class="font-bold text-sm text-opshid-ink dark:text-opshid-darkInk">OPSHID Media (Induk &bull; Rilis Resmi)</div>
+              <div class="text-xs text-opshid-muted dark:text-opshid-darkMuted mt-0.5">
+                ${escapeHtml((res.tayang_induk && res.tayang_induk.alasan) || 'Sebagai dokumen rujukan awal dan validasi narasi.')}
+              </div>
+            </div>
+
+            <!-- Urutan Media Jaringan -->
+            ${res.turunan ? res.turunan
+              .slice()
+              .sort((a, b) => ((a.jam_tayang?.urutan || 99) - (b.jam_tayang?.urutan || 99)))
+              .map(tm => `
+                <div class="relative pl-6">
+                  <div class="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-opshid-border dark:bg-opshid-darkBorder border-2 border-opshid-surface dark:border-opshid-darkSurface"></div>
+                  <div class="text-xs font-mono font-semibold text-opshid-ink dark:text-opshid-darkInk">
+                    ${escapeHtml(tm.jam_tayang?.waktu || 'Waktu Menyesuaikan')}
+                  </div>
+                  <div class="font-semibold text-xs text-opshid-ink dark:text-opshid-darkInk">${escapeHtml(tm.media)}</div>
+                  ${tm.jam_tayang?.alasan ? `<div class="text-[11px] text-opshid-muted dark:text-opshid-darkMuted mt-0.5">${escapeHtml(tm.jam_tayang.alasan)}</div>` : ''}
+                </div>
+              `).join('') : ''}
+
+          </div>
+
+          <div class="text-[11px] text-opshid-muted dark:text-opshid-darkMuted border-t border-opshid-border dark:border-opshid-darkBorder pt-2 italic">
+            Rekomendasi berdasarkan pola umum platform. Sesuaikan dengan data insight masing-masing akun.
+          </div>
+        </div>
+      `;
+
+      // ==========================================
+      // PERLU DICEK SEBELUM TAYANG
+      // ==========================================
+      if (res.perlu_dicek && res.perlu_dicek.length > 0) {
+        html += `
+          <div class="border-l-4 border-amber-600 bg-amber-50/50 dark:bg-amber-950/20 p-4 rounded border border-opshid-border dark:border-opshid-darkBorder space-y-2">
+            <div class="text-xs font-mono uppercase font-bold text-amber-900 dark:text-amber-300">
+              Perlu Dicek Sebelum Tayang
+            </div>
+            <ul class="list-disc list-inside text-xs space-y-1.5 text-opshid-ink dark:text-opshid-darkInk">
+              ${res.perlu_dicek.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    /* =========================================================================
+       8. FORMAT SALIN UNTUK WHATSAPP (TEKS POLOS *TEBAL*, _MIRING_)
+       ========================================================================= */
+
+    function formatSingleMediaForWA(m) {
+      let out = `*${m.media}*\n`;
+      if (state.currentResult?.narasi_induk?.kalimat_kunci) {
+        out += `Kalimat kunci: "${state.currentResult.narasi_induk.kalimat_kunci}"\n`;
+      }
+      out += `Pintu masuk: ${m.pintu_masuk || '-'}\n`;
+      out += `Judul: ${m.judul || '-'}\n`;
+      out += `Pembuka: ${m.pembuka || '-'}\n`;
+      out += `Diksi: ${(m.diksi || []).join(', ')}\n`;
+      out += `Hashtag: ${(m.hashtag || []).join(' ')}\n`;
+      out += `Jam tayang: *${m.jam_tayang?.waktu || '-'}* (${m.jam_tayang?.alasan || '-'})\n`;
+      out += `Saran gambar:\n`;
+      if (m.saran_gambar && m.saran_gambar.length > 0) {
+        m.saran_gambar.forEach(g => {
+          out += `- Jenis: ${g.jenis || 'Dokumentasi'}. Komposisi: ${g.komposisi || '-'}. Keterangan: _"${g.keterangan || '-'}"_\n`;
+        });
+      } else {
+        out += `- Foto dokumentasi kegiatan lapangan terkini.\n`;
+      }
+      out += `Catatan: ${m.catatan || '-'}\n`;
+      return out;
+    }
+
+    function copyMediaCardWhatsApp(idx) {
+      if (!state.currentResult?.turunan?.[idx]) return;
+      const text = formatSingleMediaForWA(state.currentResult.turunan[idx]);
+      copyToClipboardText(text, `Format WhatsApp untuk ${state.currentResult.turunan[idx].media} tersalin!`);
+    }
+
+    function copySingleTitle(text) {
+      copyToClipboardText(text, "Judul tersalin!");
+    }
+
+    function copyReferenceParagraphs() {
+      if (!state.currentResult?.narasi_induk?.paragraf) return;
+      const text = state.currentResult.narasi_induk.paragraf.join("\n\n");
+      copyToClipboardText(text, "Seluruh paragraf acuan berhasil disalin!");
+    }
+
+    function copyAllWhatsApp() {
+      if (!state.currentResult) return;
+      const res = state.currentResult;
+      let wa = `*PETA NARASI TERPADU: ${res.judul_isu || 'OPSHID'}*\n`;
+      wa += `_Organisasi Pemuda Shiddiqiyyah (OPSHID)_\n\n`;
+
+      if (res.narasi_induk) {
+        wa += `*A. NARASI INDUK*\n`;
+        wa += `Key Message: *"${res.narasi_induk.key_message || '-'}"*\n`;
+        wa += `Kalimat Kunci: *"${res.narasi_induk.kalimat_kunci || '-'}"*\n`;
+        wa += `Nada: _${res.narasi_induk.nada || '-'}\n\n`;
+        wa += `Poin Pendukung:\n`;
+        (res.narasi_induk.poin_pendukung || []).forEach((p, i) => {
+          wa += `${i + 1}. *${p.poin}* (Dasar: ${p.dasar})\n`;
+        });
+        wa += `\n———\n\n`;
+      }
+
+      if (res.turunan && res.turunan.length > 0) {
+        wa += `*B. TURUNAN PER MEDIA JARINGAN*\n\n`;
+        res.turunan.forEach(t => {
+          wa += formatSingleMediaForWA(t) + `\n———\n\n`;
+        });
+      }
+
+      if (res.risiko) {
+        wa += `*C. PETA RISIKO*\n`;
+        wa += `Tingkat: *${res.risiko.tingkat?.toUpperCase()}*\n`;
+        wa += `Alasan: ${res.risiko.alasan || '-'}\n\n`;
+        wa += `Titik Sensitif:\n`;
+        (res.risiko.titik_sensitif || []).forEach(ts => wa += `- ${ts}\n`);
+        wa += `\nPasangan Framing:\n`;
+        (res.risiko.hindari || []).forEach(h => {
+          wa += `- Hindari: _${h.framing}_\n  Ganti: *${h.ganti}*\n`;
+        });
+        wa += `\n———\n\n`;
+      }
+
+      if (res.perlu_dicek && res.perlu_dicek.length > 0) {
+        wa += `*D. PERLU DICEK SEBELUM TAYANG*\n`;
+        res.perlu_dicek.forEach(c => wa += `[ ] ${c}\n`);
+      }
+
+      copyToClipboardText(wa, "Seluruh paket narasi format WhatsApp berhasil disalin!");
+    }
+
+    /* Fallback Clipboard API + execCommand */
+    function copyToClipboardText(text, successMsg) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+          .then(() => showToast(successMsg || "Tersalin"))
+          .catch(() => fallbackCopy(text, successMsg));
+      } else {
+        fallbackCopy(text, successMsg);
+      }
+    }
+
+    function fallbackCopy(text, successMsg) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-999999px";
+      ta.style.top = "-999999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showToast(successMsg || "Tersalin");
+        } else {
+          showToast("Gagal salin");
+        }
+      } catch (err) {
+        showToast("Gagal salin");
+      }
+      document.body.removeChild(ta);
+    }
+
+    /* =========================================================================
+       9. TAB RIWAYAT
+       ========================================================================= */
+
+    function renderHistory() {
+      const container = document.getElementById('historyTableList');
+      const empty = document.getElementById('historyEmptyState');
+      const counter = document.getElementById('historyCounter');
+
+      counter.textContent = `${state.historyList.length} Dokumen`;
+
+      if (state.historyList.length === 0) {
+        empty.classList.remove('hidden');
+        container.innerHTML = '';
+        return;
+      }
+
+      empty.classList.add('hidden');
+      container.innerHTML = state.historyList.map(h => {
+        const timeFormatted = new Date(h.dibuat).toLocaleDateString('id-ID', {
+          day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+        const risk = (h.hasil?.risiko?.tingkat || 'rendah').toLowerCase();
+        let riskColor = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
+        if (risk === 'sedang') riskColor = 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300';
+        if (risk === 'tinggi') riskColor = 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300';
+
+        const mediaCount = (h.hasil?.turunan?.length) || h.input?.jumlahMedia || 0;
+
+        return `
+          <div class="border border-opshid-border dark:border-opshid-darkBorder rounded bg-opshid-surface dark:bg-opshid-darkSurface p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="font-serif font-bold text-base text-opshid-ink dark:text-opshid-darkInk">${escapeHtml(h.hasil?.judul_isu || 'Tanpa Judul')}</h3>
+                <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold ${riskColor}">Risiko ${escapeHtml(risk)}</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-3 text-xs text-opshid-muted dark:text-opshid-darkMuted font-mono">
+                <span>${timeFormatted}</span>
+                <span>&bull;</span>
+                <span>Tujuan: ${escapeHtml(h.input?.tujuan || 'Memperkuat')}</span>
+                <span>&bull;</span>
+                <span>${mediaCount} Media Jaringan</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="loadHistoryItem('${h.id}')" class="px-3 py-1.5 text-xs bg-opshid-cobalt hover:bg-opshid-cobaltHover text-white rounded font-medium">
+                Buka
+              </button>
+              <div id="delete-hist-zone-${h.id}">
+                <button onclick="promptDeleteHistory('${h.id}')" class="px-2.5 py-1.5 text-xs text-opshid-riskHigh border border-red-200 dark:border-red-900 rounded hover:bg-red-50 dark:hover:bg-red-950/40">
+                  Hapus
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function promptDeleteHistory(id) {
+      const zone = document.getElementById(`delete-hist-zone-${id}`);
+      zone.innerHTML = `
+        <div class="flex items-center gap-1.5 p-1 bg-red-50 dark:bg-red-950/50 rounded border border-red-300 dark:border-red-800 text-[11px]">
+          <span class="text-opshid-riskHigh font-semibold">Hapus riwayat?</span>
+          <button onclick="confirmDeleteHistory('${id}')" class="px-1.5 py-0.5 bg-opshid-riskHigh text-white rounded text-[10px]">Ya</button>
+          <button onclick="renderHistory()" class="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-800 rounded text-[10px]">Batal</button>
+        </div>
+      `;
+    }
+
+    function confirmDeleteHistory(id) {
+      state.historyList = state.historyList.filter(h => h.id !== id);
+      saveHistoryStorage();
+      showToast("Arsip riwayat dihapus");
+    }
+
+    function loadHistoryItem(id) {
+      const item = state.historyList.find(h => h.id === id);
+      if (!item || !item.hasil) return;
+
+      state.currentResult = item.hasil;
+      
+      // Isi kembali form
+      if (item.input?.isu) document.getElementById('inputIsu').value = item.input.isu;
+      if (item.input?.posisi) document.getElementById('inputPosisi').value = item.input.posisi;
+      if (item.input?.tujuan) {
+        state.selectedTujuan = item.input.tujuan;
+        document.querySelectorAll('.tujuan-chip').forEach(c => {
+          if (c.dataset.val === item.input.tujuan) {
+            c.className = "tujuan-chip px-2 py-1.5 rounded border border-opshid-cobalt bg-opshid-cobalt text-white font-medium text-center";
+          } else {
+            c.className = "tujuan-chip px-2 py-1.5 rounded border border-opshid-border dark:border-opshid-darkBorder bg-white dark:bg-black/20 text-opshid-muted dark:text-opshid-darkMuted hover:border-opshid-cobalt text-center";
+          }
+        });
+      }
+
+      renderNarrativeResult(item.hasil, false);
+      switchTab('susun');
+      showToast("Arsip riwayat berhasil dimuat ke meja susun");
+    }
+
+    /* =========================================================================
+       10. PENGATURAN API SERVER & MODAL
+       ========================================================================= */
+
+    function openApiConfig() {
+      document.getElementById('apiProviderSelect').value = state.apiProvider;
+      document.getElementById('apiSecretKeyInput').value = state.apiSecret;
+      document.getElementById('apiConfigModal').classList.remove('hidden');
+    }
+    function closeApiConfig() {
+      document.getElementById('apiConfigModal').classList.add('hidden');
+    }
+    function saveApiConfig() {
+      state.apiProvider = document.getElementById('apiProviderSelect').value;
+      state.apiSecret = document.getElementById('apiSecretKeyInput').value.trim();
+      localStorage.setItem('opshid_api_provider', state.apiProvider);
+      localStorage.setItem('opshid_api_secret', state.apiSecret);
+      closeApiConfig();
+      showToast("Konfigurasi API AI disimpan");
+    }
+
+    /* =========================================================================
+       11. UTILITAS
+       ========================================================================= */
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 3500);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeAttr(str) {
+      if (!str) return '';
+      return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    // Jalankan inisialisasi saat window siap
+    window.addEventListener('DOMContentLoaded', initData);
+  </script>
+</body>
+</html>
